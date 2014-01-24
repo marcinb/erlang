@@ -22,8 +22,8 @@ lookup(Key, {node, {NodeKey, _, _, Larger}}) when Key > NodeKey ->
   lookup(Key, Larger).
 
 has_value(Val, Tree) ->
-  try has_value_1(Val, Tree) of
-    false -> false
+  try
+    has_value_1(Val, Tree)
   catch
     found -> true
   end.
