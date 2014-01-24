@@ -21,13 +21,17 @@ lookup(Key, {node, {NodeKey, _, Smaller, _}}) when Key < NodeKey ->
 lookup(Key, {node, {NodeKey, _, _, Larger}}) when Key > NodeKey ->
   lookup(Key, Larger).
 
-has_value(_, {node, nil}) ->
-  false;
-has_value(Val, {node, {_, Val, _, _}}) ->
-  throw(found);
-has_value(Val, {node, {_, _, Left, Right}}) ->
-  try has_value(Val, Left) of
-    false -> has_value(Val, Right)
+has_value(Val, Tree) ->
+  try has_value_1(Val, Tree) of
+    false -> false
   catch
     found -> true
   end.
+
+has_value_1(_, {node, nil}) ->
+  false;
+has_value_1(Val, {node, {_, Val, _, _}}) ->
+  throw(found);
+has_value_1(Val, {node, {_, _, Left, Right}}) ->
+  has_value_1(Val, Left),
+  has_value_1(Val, Right).
