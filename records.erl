@@ -1,13 +1,7 @@
 -module(records).
 -compile(export_all).
-
--record(person, {
-  first_name,
-  last_name,
-  gender,
-  bio = "A person.",
-  hobbys=[]
-}).
+-include("person_record.hrl").
+-include("user_record.hrl").
 
 joe() ->
   #person{
@@ -17,3 +11,16 @@ joe() ->
     bio = "Peter's friend",
     hobbys = [tv, beer, guns]
   }.
+
+is_admin(#user{group = admin}) ->
+  true;
+is_admin(#user{}) ->
+  false.
+
+adult_section(#user{name = Name, age = Age}) when Age < 18 ->
+  Name ++ " is too young to access adult section!";
+adult_section(#user{name = Name}) ->
+  Name ++ " is old enough.".
+
+make_admin(User = #user{}) ->
+  User#user{group = admin}.
