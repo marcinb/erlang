@@ -22,23 +22,22 @@ fridge(FoodList) ->
       ok
   end.
 
-store(FridgePid, Food) ->
-  FridgePid ! {self(), {store, Food}},
-  receive
-    {_Pid, Msg} -> Msg
-  end.
-
-take(FridgePid, Food) ->
-  FridgePid ! {self(), {take, Food}},
-  receive
-    {_Pid, Msg} -> Msg
-  end.
-
-list(FridgePid) ->
-  FridgePid ! {self(), list},
-  receive
-    {_Pid, {ok, Msg}} -> Msg
-  end.
-
 start(FoodList) ->
   spawn(?MODULE, fridge, [FoodList]).
+
+store(FridgePid, Food) ->
+  communicate(FridgePid, {store, Food}).
+
+take(FridgePid, Food) ->
+  communicate(FridgePid, {take, Food}).
+
+list(FridgePid) ->
+  communicate(FridgePid, list).
+
+communicate(FridgePid, Command) ->
+  FridgePid ! {self(), Command},
+  receive
+    {_Pid, Msg} -> Msg
+  after 100 ->
+    timeout
+  end.
