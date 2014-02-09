@@ -1,5 +1,5 @@
 -module(kitchen).
--export([fridge/1, store/2, take/2, list/1, start/1]).
+-export([store/2, take/2, list/1, start/1]).
 
 fridge(FoodList) ->
   receive
@@ -23,7 +23,7 @@ fridge(FoodList) ->
   end.
 
 start(FoodList) ->
-  spawn(?MODULE, fridge, [FoodList]).
+  spawn(fun() -> fridge(FoodList) end).
 
 store(FridgePid, Food) ->
   communicate(FridgePid, {store, Food}).
